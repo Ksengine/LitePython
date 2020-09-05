@@ -28,6 +28,7 @@ jobs:
     - name: build
       run: |
         python -m nuitka --standalone hello.py
+        uname -a
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.1.4
       with:
