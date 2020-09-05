@@ -25,9 +25,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install nuitka flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
+    - name: build
       run: |
         python -m nuitka --standalone hello.py
-    - name: Test with pytest
-      run: |
-        pytest
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.1.4
+      with:
+         # Artifact name
+        name: hello
+        # A file, directory or wildcard pattern that describes what to upload
+        path: hello.dist/hello
+        # The desired behavior if no files are found using the provided path.
