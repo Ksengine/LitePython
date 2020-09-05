@@ -4,6 +4,7 @@ except:
     readline=False
 import code
 import sys
+sys.path.append(__nuitka_binary_dir)
 from pydoc import Helper
 class _helper(Helper):
     def __repr__(self):
@@ -49,7 +50,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE."""
+SOFTWARE.""".replace("\n"," ")
     def __init__(self):pass
     def __call__(self):return self.lc
     def __repr__(self):return "Type license() to see the full license text"
@@ -97,7 +98,7 @@ class LitePython(code.InteractiveConsole):
                 more = 0
         if readline:
             readline.write_history_file("litepython.history")
-console=LitePython({"__name__":"__main__","help":help},filename="__main__")
+console=LitePython({"__name__":"__main__","help":help,"license":license,"copyright":copyright,"credits":credits},filename="__main__")
 if len(sys.argv)>1:
     if sys.argv[1]=="-h" or sys.argv[1]=="--help":
         print("""LightPython 1.0.0
@@ -117,7 +118,7 @@ Try `{0} -h' for more information.""".format(sys.argv[0]))
             console.locals.update(l)
             console.runcode(code)
         runpy.exec=runner
-        runpy.run_path(sys.argv[1],{"help":help,"license":license,"copyright":copyright,"credits":credits},"__main__")
+        runpy.run_path(sys.argv[1],{"__name__":"__main__","help":help,"license":license,"copyright":copyright,"credits":credits},"__main__")
         sys.exit(0)
 bannar="""LitePython 1.0.0
 Type "help", "copyright", "credits" or "license" for more information."""
