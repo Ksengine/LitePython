@@ -41,7 +41,7 @@ jobs:
       uses: actions/upload-artifact@v2.1.4
       with:
          # Artifact name
-        name: hello
+        name: hello_min
         # A file, directory or wildcard pattern that describes what to upload
         path: hello.dist/hello
         # The desired behavior if no files are found using the provided path.
