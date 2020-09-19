@@ -1,16 +1,21 @@
 try:
     import readline
 except:
-    readline=False
+    readline = None
+from pydoc import Helper
 import code
 import sys
-sys.path.append(__nuitka_binary_dir)
-from pydoc import Helper
+import os
+sys.path=[os.path.dirname(sys.executable)]+sys.path
+
+
 class _helper(Helper):
     def __repr__(self):
         return "Type help() for interactive help, or help(object) for help about object."
+
     def __str__(self):
         return "Type help() for interactive help, or help(object) for help about object."
+
     def intro(self):
         print('''
 Welcome to LitePython 's help utility!
@@ -28,9 +33,12 @@ with a one-line summary of what it does; to list the modules whose name
 or summary contain a given string such as "spam", type "modules spam".
 ''')
 
-help=_helper()
+
+help = _helper()
+
+
 class License():
-    lc="""MIT License
+    lc = """MIT License
 
 Copyright (c) 2020 Kavindu Santhusa
 
@@ -50,17 +58,23 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.""".replace("\n"," ")
-    def __init__(self):pass
-    def __call__(self):return self.lc
-    def __repr__(self):return "Type license() to see the full license text"
-license=License()
-copyright="Copyright (c) 2020 Kavindu Santhusa"
-credits=None
-history=[]
+SOFTWARE.""".replace("\n", " ")
+    def __init__(self): pass
+    def __call__(self): return self.lc
+    def __repr__(self): return "Type license() to see the full license text"
+
+
+license = License()
+copyright = "Copyright (c) 2020 Kavindu Santhusa"
+credits = None
+history = []
 if readline:
-    readline.read_history_file("litepython.history")
-    
+    try:
+        readline.read_history_file("litepython.history")
+    except:
+        pass
+
+
 class LitePython(code.InteractiveConsole):
     def interact(self, banner=None):
         try:
@@ -97,15 +111,21 @@ class LitePython(code.InteractiveConsole):
                 self.resetbuffer()
                 more = 0
         if readline:
-            readline.write_history_file("litepython.history")
-console=LitePython({"__name__":"__main__","help":help,"license":license,"copyright":copyright,"credits":credits},filename="__main__")
-if len(sys.argv)>1:
-    if sys.argv[1]=="-h" or sys.argv[1]=="--help":
+            try:
+                readline.write_history_file("litepython.history")
+            except:
+                pass
+
+
+console = LitePython({"__name__": "<stdin>", "help": help, "license": license,
+                      "copyright": copyright, "credits": credits}, filename="<stdin>")
+if len(sys.argv) > 1:
+    if sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print("""LightPython 1.0.0
 usage: {} [option] ... [-c cmd | -m mod | file | -] [arg] ...""".format(sys.argv[0]))
         sys.exit(0)
-    elif sys.argv[1]=="-c" or sys.argv[1]=="--compile":
-        if len(sys.argv)>2:
+    elif sys.argv[1] == "-c" or sys.argv[1] == "--compile":
+        if len(sys.argv) > 2:
             console.runcode(sys.argv[2])
         else:
             print("""Argument expected for the -c option
@@ -113,13 +133,26 @@ usage: {0} [option] ... [-c cmd | -m mod | file | -] [arg] ...
 Try `{0} -h' for more information.""".format(sys.argv[0]))
         sys.exit(0)
     else:
+        if sys.argv[1] == "-m":
+            if len(sys.argv) > 2:
+                _file = os.path.join(os.path.dirname(
+                    sys.executable), sys.argv[2])
+            else:
+                print("""Argument expected for the -m option
+usage: {0} [option] ... [-c cmd | -m mod | file | -] [arg] ...
+Try `{0} -h' for more information.""".format(sys.argv[0]))
+                sys.exit(0)
+        else:
+            _file = sys.argv[2]
         import runpy
-        def runner(code="",l={}):
+
+        def runner(code="", l={}):
             console.locals.update(l)
             console.runcode(code)
-        runpy.exec=runner
-        runpy.run_path(sys.argv[1],{"__name__":"__main__","help":help,"license":license,"copyright":copyright,"credits":credits},"__main__")
+        runpy.exec = runner
+        runpy.run_path(_file, {"__name__": "__main__", "help": help, "license": license,
+                               "copyright": copyright, "credits": credits}, "__main__")
         sys.exit(0)
-bannar="""LitePython 1.0.0
+bannar = """LitePython 1.0.0
 Type "help", "copyright", "credits" or "license" for more information."""
 console.interact(bannar)
